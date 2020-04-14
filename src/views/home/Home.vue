@@ -52,7 +52,7 @@ import FeatureView from "./childComps/FeatureView";
 import { getHomeMultidata, getHomeGoods } from "network/home";
 import { debounce } from "../../common/utils";
 
-export default { 
+export default {
   name: "Home",
   components: {
     NavBar,
@@ -96,12 +96,12 @@ export default {
     this.getHomeGoods("sell");
   },
   destroyed() {
-    console.log('home destroyed');
+    console.log("home destroyed");
   },
   // 进入组件时执行的代码
   activated() {
     // 加载之前页面的位置
-    this.$refs.scroll.scrollTo(0,this.saveY,0);
+    this.$refs.scroll.scrollTo(0, this.saveY, 0);
     this.$refs.scroll.refresh();
   },
   // 离开组件时进行的代码
@@ -168,6 +168,8 @@ export default {
     contentScroll(position) {
       // tabControl吸顶效果
       this.isTabFixed = -position.y > this.tabOffsetTop;
+      // 回顶部图标的显示与隐藏
+      this.isShowBackTop = (-position.y) > this.tabOffsetTop;
     },
     // 4.上拉加载更多
     loadMore() {
