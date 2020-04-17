@@ -25,7 +25,7 @@
 </template>
 
 <script>
-  import {formatDate} from "common/utils";
+  import {formatDate} from "../../../common/utils";
   
   export default {
     name: 'DetailCommentInfo',
@@ -41,8 +41,10 @@
     filters: {
       // 评论时间格式化
 		  showDate(value) {
+        // 1.将时间戳转化为Date对象
         let date = new Date(value * 1000);
-        return formatDate(date, 'yyyy-MM-dd')
+        // 2.将date进行格式化，转化为对相应的字符串
+        return formatDate(date, 'yyyy-MM-dd hh:mm')
       }
     }
     }

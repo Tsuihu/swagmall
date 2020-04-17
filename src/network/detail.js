@@ -45,6 +45,5 @@ export class GoodsParam {
 export function getRecommend(){
 return request({
   url:'/recommend',
-
 })
 }

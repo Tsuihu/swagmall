@@ -7,34 +7,48 @@
       <detail-shop-info :shop="shop"></detail-shop-info>
       <detail-goods-info @imageLoad="imageLoad" :detail-info="detailInfo"></detail-goods-info>
       <detail-param-info :param-info="paramInfo"></detail-param-info>
+      <detail-comment-info :comment-info="commentInfo"></detail-comment-info>
+      <goods-list :goods="recommends"></goods-list>
     </scroll>
   </div>
 </template>
 
 <script>
-import Scroll from "components/common/scroll/Scroll";
-
 import DetailNavBar from "./childComps/DetailNavBar";
 import DetailSwiper from "./childComps/DetailSwiper";
 import DetailBaseInfo from "./childComps/DetailBaseInfo";
 import DetailShopInfo from "./childComps/DetailShopInfo";
-import DetailGoodsInfo from './childComps/DetailGoodsInfo';
-import DetailParamInfo from './childComps/DetailParamInfo'
+import DetailGoodsInfo from "./childComps/DetailGoodsInfo";
+import DetailParamInfo from "./childComps/DetailParamInfo";
+import DetailCommentInfo from "./childComps/DetailCommentInfo";
 
-
-import { getDetail, Goods, Shop, GoodsParam } from "network/detail";
+import Scroll from "components/common/scroll/Scroll";
+import GoodsList from "components/content/goods/GoodsList";
+import {
+  getDetail,
+  Goods,
+  Shop,
+  GoodsParam,
+  getRecommend
+} from "network/detail";
+// import {debounce} from '../../common/utils';
+import {itemListenerMixin} from '../../common/mixin';
 
 export default {
   name: "Detail",
   components: {
     Scroll,
+    GoodsList,
+
     DetailNavBar,
     DetailSwiper,
     DetailBaseInfo,
     DetailShopInfo,
     DetailGoodsInfo,
-    DetailParamInfo
+    DetailParamInfo,
+    DetailCommentInfo
   },
+  mixins: [itemListenerMixin],
   data() {
     return {
       iid: null,
@@ -42,15 +56,17 @@ export default {
       goods: {},
       shop: {},
       detailInfo: {},
-      paramInfo: {}
+      paramInfo: {},
+      commentInfo: {},
+      recommends: [],
     };
   },
   created() {
     // 1.保存传入的iid
     this.iid = this.$route.params.iid;
-    // 2.根据iid传入数据
+    // 2.根据iid请求数据
     getDetail(this.iid).then(res => {
-      console.log(res);
+      // console.log(res);
       const data = res.result;
       // 2.1.获取顶部图片数据
       this.topImages = data.itemInfo.topImages;
@@ -63,16 +79,34 @@ export default {
       // 2.3.获取店铺信息
       this.shop = new Shop(data.shopInfo);
       // 2.4.保存商品的详情数据
-      this.detailInfo = data.detailInfo
+      this.detailInfo = data.detailInfo;
       // 2.5.获取参数信息
-      this.paramInfo = new GoodsParam(data.itemParams.info, data.itemParams.rule);
+      this.paramInfo = new GoodsParam(
+        data.itemParams.info,
+        data.itemParams.rule
+      );
+      // 2.6.获取评论信息
+      if (data.rate.cRate !== 0) {
+        this.commentInfo = data.rate.list[0];
+      }
+    });
+    // 3.请求推荐数据
+    getRecommend().then(res => {
+      console.log(res);
+      this.recommends = res.data.list;
     });
   },
   methods: {
     imageLoad() {
-      this.$refs.scroll.refresh()
+      this.$refs.scroll.refresh();
     }
-  }
+  },
+  mounted() {
+    
+  },
+  destroyed() {
+    this.$bus.$off("itemImgLoad", this.itemImgListener);
+  },
 };
 </script>
 
