@@ -1,5 +1,5 @@
 // 刷新频繁防抖动
-export function debounce(func, delay) {
+export function debouce(func, delay) {
   let timer = null;
   return function(...args) {
     if (timer) clearTimeout(timer);

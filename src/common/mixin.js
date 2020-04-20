@@ -1,4 +1,4 @@
-import {debounce} from './utils'
+import {debouce} from './utils'
 import BackTop from 'components/content/backTop/BackTop'
 
 // 监听图片的加载，刷新可滚动高度
@@ -10,7 +10,7 @@ export const itemListenerMixin = {
   },
   mounted() {
     // 图片加载完成事件监听，刷新scroll的可滚动高度，优化用户体验(防抖)
-    const refresh = debounce(this.$refs.scroll.refresh, 100)
+    const refresh = debouce(this.$refs.scroll.refresh, 100)
     
     // 监听事件总线发送来的事件并保存
     this.itemImgListener = () => {
@@ -28,12 +28,12 @@ export const backTopMixin = {
   },
   data() {
     return {
-      isShow: false,
+      isShowBackTop: false,
     }
   },
   methods: {
     backClick() {
-      this.$refs.scroll.backTop(0, 0)
+      this.$refs.scroll.scrollTo(0, 0)
     },
   }
 }
