@@ -33,7 +33,7 @@ export default{
     },
     // 跳转详情页并记录id
     itemClick() {
-      this.$router.push('/detail/' + this.goodsItem.iid)
+      this.$router.push('/detail/' + this.goodsItem.iid);
     }
   },
 }

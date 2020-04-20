@@ -5,7 +5,7 @@ import BackTop from 'components/content/backTop/BackTop'
 export const itemListenerMixin = {
   data() {
     return{
-      itemImgListener: null
+      itemImgListener: null,
     }
   },
   mounted() {

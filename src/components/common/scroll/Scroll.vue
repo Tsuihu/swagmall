@@ -56,6 +56,7 @@ export default{
     },
     // 刷新页面 计算可滚动的区域
     refresh() {
+      // console.log('123')
       this.scroll && this.scroll.refresh()
     },
     // 上拉加载更多

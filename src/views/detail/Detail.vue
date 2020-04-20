@@ -1,14 +1,14 @@
 <template>
   <div id="detail">
-    <detail-nav-bar class="detail-nav"></detail-nav-bar>
-    <scroll class="content" ref="scroll">
+    <detail-nav-bar ref="nav" @titleClick="titleClick" class="detail-nav"></detail-nav-bar>
+    <scroll class="content" ref="scroll" @scroll="contentScroll" :probe-type="3">
       <detail-swiper :top-images="topImages"></detail-swiper>
       <detail-base-info :goods="goods"></detail-base-info>
       <detail-shop-info :shop="shop"></detail-shop-info>
       <detail-goods-info @imageLoad="imageLoad" :detail-info="detailInfo"></detail-goods-info>
-      <detail-param-info :param-info="paramInfo"></detail-param-info>
-      <detail-comment-info :comment-info="commentInfo"></detail-comment-info>
-      <goods-list :goods="recommends"></goods-list>
+      <detail-param-info ref="params" :param-info="paramInfo"></detail-param-info>
+      <detail-comment-info ref="comment" :comment-info="commentInfo"></detail-comment-info>
+      <goods-list ref="recommend" :goods="recommends"></goods-list>
     </scroll>
   </div>
 </template>
@@ -31,8 +31,9 @@ import {
   GoodsParam,
   getRecommend
 } from "network/detail";
-// import {debounce} from '../../common/utils';
-import {itemListenerMixin} from '../../common/mixin';
+import { debouce } from "../../common/utils";
+import { itemListenerMixin } from "../../common/mixin";
+import { debounce } from "../../common/utils";
 
 export default {
   name: "Detail",
@@ -59,6 +60,8 @@ export default {
       paramInfo: {},
       commentInfo: {},
       recommends: [],
+      themeTopYs: [],
+      currentIndex: 0
     };
   },
   created() {
@@ -92,21 +95,53 @@ export default {
     });
     // 3.请求推荐数据
     getRecommend().then(res => {
-      console.log(res);
+      // console.log(res);
       this.recommends = res.data.list;
     });
   },
   methods: {
     imageLoad() {
       this.$refs.scroll.refresh();
+
+      this.themeTopYs = [];
+      this.themeTopYs.push(0);
+      // 获取每一个组件元素的offsetTop
+      this.themeTopYs.push(this.$refs.params.$el.offsetTop);
+      this.themeTopYs.push(this.$refs.comment.$el.offsetTop);
+      this.themeTopYs.push(this.$refs.recommend.$el.offsetTop);
+      this.themeTopYs.push(Number.MAX_VALUE);
+      console.log(this.themeTopYs);
+    },
+    // 点击详情标题获取索引值
+    titleClick(index) {
+      this.$refs.scroll.scrollTo(0, -this.themeTopYs[index], 1000);
+    },
+    contentScroll(position) {
+      // 1.获取y值
+      const positionY = -position.y;
+      // 2.positionY和主题中的值进行对比
+      let length = this.themeTopYs.length;
+      for (let i = 0; i < length - 1; i++) {
+        // if(this.currentIndex !== i && ((i < length - 1 && positionY >= this.themeTopYs[i] && positionY < this.themeTopYs[i+1]) ||
+        // (i === length - 1 && positionY > this.themeTopYs[i]))) {
+        //   this.currentIndex = i;
+        //   console.log(this.currentIndex)
+        //   this.$refs.nav.currentIndex = this.currentIndex
+        // }
+        if (
+          this.currentIndex !== i &&
+          positionY > this.themeTopYs[i] && positionY < this.themeTopYs[i + 1]
+        ) {
+          this.currentIndex = i;
+          console.log(this.currentIndex);
+          this.$refs.nav.currentIndex = this.currentIndex;
+        }
+      }
     }
-  },
-  mounted() {
-    
   },
   destroyed() {
     this.$bus.$off("itemImgLoad", this.itemImgListener);
-  },
+  }
 };
 </script>
 
