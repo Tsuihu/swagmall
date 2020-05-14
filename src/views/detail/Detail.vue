@@ -2,6 +2,7 @@
   <div id="detail">
     <detail-nav-bar ref="nav" @titleClick="titleClick" class="detail-nav"></detail-nav-bar>
     <scroll class="content" ref="scroll" @scroll="contentScroll" :probe-type="3">
+      <div>{{$store.state.cartList.length}}</div>
       <detail-swiper :top-images="topImages"></detail-swiper>
       <detail-base-info :goods="goods"></detail-base-info>
       <detail-shop-info :shop="shop"></detail-shop-info>
@@ -141,14 +142,14 @@ export default {
     // 添加购物车 
     addToCart() {
       // 1.获取购物车需要展示的信息
-      const prduct = {}
+      const product = {}
       product.image = this.topImages[0];
-      product.title = this.goodsInfo.title;
-      product.desc = this.goodsInfo.desc;
-      product.price = this.goodsInfo.highNowPrice;
+      product.title = this.goods.title;
+      product.desc = this.goods.desc;
+      product.price = this.goods.highNowPrice;
       product.iid = this.iid;
       // 2.将商品信息添加购物车
-      
+      this.$store.dispatch('addCart',product);
     }
   },
   destroyed() {
