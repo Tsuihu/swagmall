@@ -37,6 +37,8 @@ import {
 } from "network/detail";
 import { itemListenerMixin, backTopMixin } from "../../common/mixin";
 
+import {mapActions} from 'vuex';
+
 export default {
   name: "Detail",
   components: {
@@ -83,7 +85,6 @@ export default {
         data.columns,
         data.shopInfo.services
       );
-      console.log(this.goods)
       // 2.3.获取店铺信息
       this.shop = new Shop(data.shopInfo);
       // 2.4.保存商品的详情数据
@@ -105,6 +106,7 @@ export default {
     });
   },
   methods: {
+    ...mapActions(['addCart']),
     imageLoad() {
       this.$refs.scroll.refresh();
 
@@ -151,6 +153,9 @@ export default {
       product.iid = this.iid;
       // 2.将商品信息添加购物车
       this.$store.dispatch('addCart',product);
+      this.addCart(product).then(res => {
+        console.log(res);
+      })
     }
   },
   destroyed() {
