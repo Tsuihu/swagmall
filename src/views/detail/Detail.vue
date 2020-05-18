@@ -28,6 +28,7 @@ import DetailBottomBar from "./childComps/DetailBottomBar";
 
 import Scroll from "components/common/scroll/Scroll";
 import GoodsList from "components/content/goods/GoodsList";
+
 import {
   getDetail,
   Goods,
@@ -35,16 +36,15 @@ import {
   GoodsParam,
   getRecommend
 } from "network/detail";
-import { itemListenerMixin, backTopMixin } from "../../common/mixin";
 
-import {mapActions} from 'vuex';
+import { itemListenerMixin, backTopMixin } from "../../common/mixin";
+import { mapActions } from "vuex";
 
 export default {
   name: "Detail",
   components: {
     Scroll,
     GoodsList,
-
     DetailNavBar,
     DetailSwiper,
     DetailBaseInfo,
@@ -54,7 +54,7 @@ export default {
     DetailCommentInfo,
     DetailBottomBar
   },
-  mixins: [itemListenerMixin,backTopMixin],
+  mixins: [itemListenerMixin, backTopMixin],
   data() {
     return {
       iid: null,
@@ -106,7 +106,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions(['addCart']),
+    ...mapActions(["addCart"]),
     imageLoad() {
       this.$refs.scroll.refresh();
 
@@ -142,20 +142,23 @@ export default {
       // 3.是否显示回到顶部
       this.isShowBackTop = -position.y > 800;
     },
-    // 添加购物车 
+    // 添加购物车
     addToCart() {
       // 1.获取购物车需要展示的信息
-      const product = {}
+      const product = {};
       product.image = this.topImages[0];
       product.title = this.goods.title;
       product.desc = this.goods.desc;
       product.price = this.goods.nowPrice;
       product.iid = this.iid;
       // 2.将商品信息添加购物车
-      this.$store.dispatch('addCart',product);
+      // this.$store.dispatch('addCart',product).then(res => {
+      //   console.log(res);
+      // });
       this.addCart(product).then(res => {
         console.log(res);
-      })
+        this.$toast.show(res, 1500);
+      });
     }
   },
   destroyed() {

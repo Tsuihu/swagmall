@@ -5,7 +5,7 @@
       <span>全选</span>
     </div>
     <div class="price">总价：{{totalPrice}}</div>
-    <div class="calculate">付款:({{checkLength}})</div>
+    <div class="calculate" @click="calcClick()">付款:({{checkLength}})</div>
   </div>
 </template>
 
@@ -56,6 +56,11 @@ export default {
       } else {
         //单选部分选中或者没有选中
         this.$store.state.cartList.forEach(item => (item.checked = true));
+      }
+    },
+    calcClick() {
+      if(!this.allCheck) {
+        this.$toast.show("请选择购买商品",1500);
       }
     }
   }
