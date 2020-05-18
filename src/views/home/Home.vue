@@ -50,7 +50,7 @@ import RecommendView from "./childComps/RecommendView";
 import FeatureView from "./childComps/FeatureView";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
-import {itemListenerMixin,backTopMixin} from '../../common/mixin'
+import { itemListenerMixin, backTopMixin } from "../../common/mixin";
 
 export default {
   name: "Home",
@@ -65,7 +65,7 @@ export default {
     RecommendView,
     FeatureView
   },
-  mixins: [itemListenerMixin,backTopMixin],
+  mixins: [itemListenerMixin, backTopMixin],
   data() {
     return {
       banners: [],
@@ -110,12 +110,35 @@ export default {
     // 储存离开时页面的位置
     this.saveY = this.$refs.scroll.getScrollY();
     // 取消全局事件的监听
-    this.$bus.$off('itemImgLoad',this.itemImgListener)
+    this.$bus.$off("itemImgLoad", this.itemImgListener);
   },
   mounted() {
-    
+    //1.监听GoodsListItem中图片加载完成
+    this.itemImgListener = this.$bus.$on("itemImageLoad", () => {
+      //不做防抖动时，页面就刷新了30遍，refresh函数就执行了30遍。
+      //this.$refs.scroll.refresh()
+      this.refresh();
+    });
+    //判断是否是手机展示
+    if (this._isMobile()) {
+      // console.log(this.$tabbar)
+      this.$toast.show("如果商品不显示，请尝试刷新或者稍后再试。", 1500);
+      setTimeout(() => {
+        this.$toast.show("GitHub：swaggoku", 2500);
+      }, 1500);
+    } else {
+      this.$toast.show("建议使用手机浏览器获得更好体验", 9000);
+    }
   },
   methods: {
+    // 判断是否为手机格式
+    _isMobile() {
+      let flag = navigator.userAgent.match(
+        /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
+      );
+      // console.log(flag)
+      return flag;
+    },
     /**
      * 网络请求相关方法
      */
@@ -164,7 +187,7 @@ export default {
       // tabControl吸顶效果
       this.isTabFixed = -position.y > this.tabOffsetTop;
       // 回顶部图标的显示与隐藏
-      this.isShowBackTop = (-position.y) > this.tabOffsetTop;
+      this.isShowBackTop = -position.y > this.tabOffsetTop;
     },
     // 4.上拉加载更多
     loadMore() {

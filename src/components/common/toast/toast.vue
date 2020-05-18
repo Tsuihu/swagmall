@@ -38,6 +38,6 @@ export default {
   transform: translate(-50%, -50%);
   color: #fff;
   z-index: 99;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.7);
 }
 </style>
