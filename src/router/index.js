@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 
 // 懒加载导入视图组件
 const Home = () => import('views/home/Home.vue')
-const Category = () => import('views/caregory/Caregory.vue')
+const Category = () => import('views/caregory/Category.vue')
 const Cart = () => import('views/cart/Cart.vue')
 const Profile = () => import('views/profile/Profile.vue')
 const Detail = () => import('views/detail/Detail.vue')
